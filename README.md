@@ -54,3 +54,12 @@ toggleSelection(row, select) {
   }
 }
 ```
+
+##### 3、组件动态增删 + 表单校验
+
+```javascript
+this.list.push(Obj)
+this.list.splice(index, 1)
+:prop="`${循环的list名}[${index}].‘校验属性名’`" // 如:prop="`${list}[${index}].name`"
+```
+
