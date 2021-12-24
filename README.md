@@ -61,5 +61,53 @@ toggleSelection(row, select) {
 this.list.push(Obj)
 this.list.splice(index, 1)
 :prop="`${循环的list名}[${index}].‘校验属性名’`" // 如:prop="`${list}[${index}].name`"
+
+// 以下适用于
+// <el-form :model="formData"> // 此处必须有model，否则无法触发form的validate方法，model接收Object，所以必须用对象包裹数组list
+// 	 <el-form-item
+// 	 	  v-for="（item, index） in formData.list"
+//		  :prop="`list[${index}.name]`"
+//		  :rules="[{ validator: validateName(item.name, etc.), trigger: 'change' }]" // validateName为method，可用于部分字段校验
+//    >
+// 
+validateName(name, ...params) {
+  return (rule, value, callback) => {
+    const regExp = /^xxxxx$/
+    if (xx) {
+      return callback()
+    } else if (regExp.test(name)) {
+      callback(new Error('name不符合规则哦'))
+    } else {
+      return callback() // 最后必须返回，否则点击validate永远不会success
+    }
+  }
+}
+
+```
+
+##### 4、sortable.js对表格项进行操作时必须有row-key
+
+```javascript
+:row-key="row => row.id"
+
+// 行拖拽
+rowDrop() {
+  // 此时找到的额元素是要拖拽元素的父容器
+  const tbody = this.$refs['xxxx'].$el.querySelectorAll('.el-table__body-wrapper > table > tbody')[0]
+  Sortable.create(tbody, {
+    animation： 150,
+    handle: 'drag-btn',
+    draggable: '.xxx .el-table__row', // 指定父元素下可拖拽的元素
+    onEnd: evt => {
+    	if (evt.oldIndex !== evt.newIndex) {
+    		this.$nextTick(() => {
+          // 务必设置row-key，否则排序会出问题
+          const targetRow = this.dataList.splice(evt.oldIndex, 1)[0]
+          this.dataList.splice(evt.newIndex, 0, targetRow)
+        })
+		  }
+  	}
+  })
+}
 ```
 
