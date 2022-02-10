@@ -64,12 +64,12 @@ this.list.splice(index, 1)
 
 // 此处必须有model，否则无法触发form的validate方法，model接收Object，所以必须用对象包裹数组list
 <el-form :model="formData">
-	<el-form-item
-		v-for="（item, index） in formData.list"
+  <el-form-item
+    v-for="（item, index） in formData.list"
     :prop="`list[${index}.name]`"
- 	 	// validateName为method，可用于部分字段校验
+    // validateName为method，可用于部分字段校验
     :rules="[{ validator: validateName(item.name, etc.), trigger: 'change' }]"
-	>
+  >
 validateName(name, ...params) {
   return (rule, value, callback) => {
     const regExp = /^xxxxx$/
@@ -108,6 +108,23 @@ rowDrop() {
 		  }
   	}
   })
+}
+```
+
+##### 5、el-table表格内为树形数据时，展开深度较深时文字会被indent推到右侧隐藏掉，且不会触发横向滚动轴。此时可以设置合理的indent，或者：
+
+```javascript
+<el-table>
+  ...
+  @expand-change="expandChange"
+  <el-table-column
+    :width="labelWidth" // 动态调整label的宽度触发横向滚动轴
+  />
+</el-table>
+
+expandChange(row) {
+  const nodeLevel = row.nodeLevel // nodeLevel一般后端都会返回，或者自己找
+  this.labelWidth = nodeLevel >= 10 ? (500 + 20 * (nodeLevel - 10)) : 500
 }
 ```
 
