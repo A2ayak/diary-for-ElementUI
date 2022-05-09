@@ -3,7 +3,7 @@
 
 ---
 
-##### 1、el-tree父子结点分离，勾父选全子，勾子选父
+#### 1、el-tree父子结点分离，勾父选全子，勾子选父
 
 ```javascript
 :check-strictly="true" // 分离父子关系
@@ -23,7 +23,7 @@ checkChange(node) {
 
 
 
-##### 2、el-table树形结构，含不可选项的全选和取消全选（全选按钮样式需要额外写）
+#### 2、el-table树形结构，含不可选项的全选和取消全选（全选按钮样式需要额外写）
 
 ```javascript
 @select-all="selectAll(treeTableData)" 
@@ -55,7 +55,7 @@ toggleSelection(row, select) {
 }
 ```
 
-##### 3、组件动态增删 + 表单校验
+#### 3、组件动态增删 + 表单校验
 
 ```javascript
 this.list.push(Obj)
@@ -85,7 +85,7 @@ validateName(name, ...params) {
 
 ```
 
-##### 4、sortable.js对表格项进行操作时必须有row-key
+#### 4、sortable.js对表格项进行操作时必须有row-key
 
 ```javascript
 :row-key="row => row.id"
@@ -111,7 +111,7 @@ rowDrop() {
 }
 ```
 
-##### 5、el-table表格内为树形数据时，展开深度较深时文字会被indent推到右侧隐藏掉，且不会触发横向滚动轴。此时可以设置合理的indent，或者：
+#### 5、el-table表格内为树形数据时，展开深度较深时文字会被indent推到右侧隐藏掉，且不会触发横向滚动轴。此时可以设置合理的indent，或者：
 
 ```javascript
 <el-table>
@@ -128,7 +128,7 @@ expandChange(row) {
 }
 ```
 
-##### 6、（vxe-table + sortable.js）虚拟列表树形表格拖拽，与elementUI-table不同点为数据的index
+#### 6、（vxe-table + sortable.js）虚拟列表树形表格拖拽，与elementUI-table不同点为数据的index
 
 ```javascript
 // 行拖拽
