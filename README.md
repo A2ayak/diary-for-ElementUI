@@ -128,3 +128,76 @@ expandChange(row) {
 }
 ```
 
+##### 6、（vxe-table + sortable.js）虚拟列表树形表格拖拽，与elementUI-table不同点为数据的index
+
+```javascript
+// 行拖拽
+rowDrop() {
+  if (this.rowDropInstance) {
+    this.rowDropInstance.destory()
+    this.rowDropInstance = null
+  }
+  // 找拖拽元素父容器
+  const tbody = this.$refs['xxxTable'].$el.querySelectorAll('.el-table__body-wrapper > table > tbody')[0]
+  // 递归遍历把树形数据弄扁平
+  const flatTree = (flatTableData, flatArr, expandRowKeys) => {
+    flatTableData.map(item => {
+      flatArr.push(item)
+      if (item.children?.length && expandRowKeys.includes(item.id)) {
+        flatTree(item.children, flatArr, expandRowKeys)
+      }
+    })
+	}
+  this.rowDropInstance = Sortable.create(tbody, {
+    animation: 150,
+    handle: '.drag-btn' // 可拖拽元素的class
+    draggable: '.xxx-table .vxe-body--row' // 指定父元素下可被拖拽子元素
+    onStart: ({ oldIndex }) => {
+    	const xxxTable = this.$refs['xxxTable']
+    	xxxTable.setCurrentRow(null) // 取消已选中行的高亮
+    	this.flatArr = []
+    	const expandRowKeys = xxxTable.treeConfig.expandRowKeys // vxe-table方法
+      const originExpandRowKeys = deepCopy(expandRowKeys) // 保存一份初始展开节点id
+      flatTree(treeData, this.flatArr, expandRowKeys)
+    	const sourceObj = this.flatArr[oldIndex]
+      this.flatArr.filter(item => item.parentId === sourceObj.parentId).map(row =>{
+        xxxTable.setTreeExpansion(row, false) // 折叠非同父级节点，注意此时被拖动节点的oldIndex和被替换节点的newIndex会发生改变
+        const index = originExpandRowKeys.findIndex(id => id === row.id) // 删除原始的已展开树节点中被折叠的节点id
+        if (index !== -1) originExpandKeys.splice(index, 1)
+      })
+    	this.secondFlatArr = []
+    	flatTree(treeData, this.secondFlatArr, originExpandKeys)
+  	},
+    // 在拖动时判断是否可以放入，非同父节点不允许放入
+    onMove: ({ drager, related }) => {
+      // 层级比较，通过dom节点的classList转数组，再找层级和ID。 classList中有自定义的class，包含row的parentId/id/nodeLevel
+      // tableRowClassName({ row }) { return `row_parent_id_${row.parentId} row_id_${row.id} row_level_${row.nodeLevel}` }
+      const sourceClassList = dragged.classList.value.split(' ')
+      const targetClassList = related.classList.value.split(' ')
+      const sourceLevel = sourceClassList.find(item => item.indexOf('row_level') !== -1).split('_')[2]
+      const targetLevel = targetClassList.find(item => item.indexOf('row_level') !== -1).split('_')[2]
+      // 父节点id比较
+      const sourceParentId = sourceClassList.find(item =>item.indexOf('row_parent_id') !== -1).split('_')[3]
+      const targetParentId = targetClassList.find(item =>item.indexOf('row_parent_id') !== -1).split('_')[3]
+      if (sourceLevel !== targetLevel || sourceParentId !== targetParentId) return false
+    },
+    onEnd: ({ oldIndex, newIndex }) => {
+      // 此处有坑：被拖动的节点（sourceObj)的index为未折叠（onStart时已折叠非同父级节点）之前的index，
+      //         替换节点（targetObj）的index为折叠以后的index
+      const sourceObj = this.flatArr[oldIndex]
+      const targetObj = this.secondFlatArr(newIndex)
+      if (sourceObj.parentId === targetObj.parentId) {
+        const domList = this.$refs['xxxTable'].$el.querySelectorAll('.row_parent_id_${sourceObj.parentId}')
+        const params = []
+        domList.map((node, i) => {
+          params.push({
+            id: node.classList[2].split('_')[2] // 此处拿到 row_id_xx的xx这个id
+            order：i + 1 // 排序参数
+          })
+        })
+        // 后面根据自身情况发请求，上面的参数仅供参考
+      }
+    }
+  })
+}
+```
