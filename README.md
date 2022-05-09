@@ -1,6 +1,8 @@
 # Diary-for-ElementUI
 :fire: ElemetnUI自救指南，正经人谁写日记呢？
 
+[![996.icu](https://img.shields.io/badge/link-996.icu-red.svg)](https://996.icu)  [![LICENSE](https://img.shields.io/badge/license-Anti%20996-blue.svg)](https://github.com/996icu/996.ICU/blob/master/LICENSE)
+
 ---
 
 #### 1、el-tree父子结点分离，勾父选全子，勾子选父
