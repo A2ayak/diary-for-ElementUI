@@ -66,12 +66,18 @@ this.list.splice(index, 1)
 
 // 此处必须有model，否则无法触发form的validate方法，model接收Object，所以必须用对象包裹数组list
 <el-form :model="formData">
-  <el-form-item
+	<el-form-item
     v-for="（item, index） in formData.list"
     :prop="`list[${index}.name]`"
     // validateName为method，可用于部分字段校验
-    :rules="[{ validator: validateName(item.name, etc.), trigger: 'change' }]"
+    :rules="[{ validator: validateName(item.name, ...rest), trigger: 'change' }]"
   >
+  // 同一行有两个input框的情况，外层v-for，内层 :prop、:rules
+  <el-form-item	v-for="（item, index） in formData.list">
+    <el-form-item :prop="xx" :rules="{xx}" style="一般需要调整样式">
+    <el-form-item :prop="xx" :rules="{xx}" style="一般需要调整样式">
+  >
+>
 validateName(name, ...params) {
   return (rule, value, callback) => {
     const regExp = /^xxxxx$/
