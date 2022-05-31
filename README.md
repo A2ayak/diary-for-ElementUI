@@ -19,7 +19,7 @@ checkChange(node) {
       this.selectChildNodes(currentNode, keys)
       this.selectFatherNodes(currentNode.parent, keys)
       this.$refs['tree'].setCheckedKeys(keys) // 将所有keys数组的节点全选中
-   }
+  }
 }
 ```
 
@@ -113,8 +113,8 @@ rowDrop() {
           const targetRow = this.dataList.splice(evt.oldIndex, 1)[0]
           this.dataList.splice(evt.newIndex, 0, targetRow)
         })
-		  }
-  	}
+  		}
+		}
   })
 }
 ```
@@ -208,4 +208,40 @@ rowDrop() {
     }
   })
 }
+```
+
+#### 7、el-date-picker 日期时间选择精确到时
+
+```javascript
+<el-date-picker>
+  v-model="timeModel" // 次数获得的值将被format，计算时需要加上":00:00 " 转换成时间对象、时间戳
+	type="datetime"
+	popper-class="xxx-date-picker"
+	format="yyyy-MM-dd HH"
+	value-format="yyy-MM-dd HH"
+	:default-value="new Date()"
+	:picker-options="timerPickerOptions"
+	...
+
+
+data() {
+  return {
+    timerPickerOptions: {
+      disabledDate: time => time.getTime() < getMidnightDate().getTime(),
+      selectableRange: '00:00:00 - 23:00:00'（或者[00:00:00 - 23:00:00]，该属性在timerPicker里，也可根据需要调整变量）
+    }
+  }
+}
+
+<style lang="scss">
+  .xxx-date-picker {
+    .el-time-spinner__wrapper:first-child {
+      width: 100%; // 把 ”时“ 填充满格子宽度
+    }
+    .el-time-spinner__wrapper:nth-child(2) {
+      display: none; // 隐藏 “分” 滚动栏
+    }
+  }
+<style>
+  
 ```
